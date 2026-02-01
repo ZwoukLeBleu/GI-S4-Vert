@@ -1,21 +1,26 @@
 #pragma once
 
 
-#include <cstdint>
+#include <stdint.h>
+
+#define FILE_VERSION 1
+#define FILE_NAME "Game.bin"
 
 
 /**
  * FIXED HEADER TO DECLARE THE FILE SECTOR
  */
-typedef union {
-    struct {
+
+typedef struct {
         uint32_t fileVersion : 8;
         uint32_t controlFlags : 8;
         uint32_t reserved : 16;
         uint32_t fileLen;
-    } frame;
+} FrameFileMetaData;
 
-    uint8_t byteMap[sizeof(frame)];
+typedef union {
+    FrameFileMetaData frame;
+    uint8_t byteMap[sizeof(FrameFileMetaData)];
 } FileMetaData;
 
 
@@ -41,59 +46,63 @@ typedef union {
     uint8_t byteMap[sizeof(Color) * 16];
 } ColorRegister;
 
-typedef union {
-    struct {
+
+
+typedef struct {
         uint32_t nbOfActors:8;
         uint32_t playerActorId:8;
         uint32_t reserved:16;
-    }frame;
+} FrameActorsHeader;
 
-    uint8_t byteMap[sizeof(frame)];
+typedef union {
+    FrameActorsHeader frame;
+    uint8_t byteMap[sizeof(FrameActorsHeader)];
 } ActorsHeader;
 
 /**
  * Actor header to indicate at the console the number of sprite and its id. The console directly assign the sprite selection based on the sequence (sprite 0 = id 0 for actor id [actor_id.sprite_id])
  */
- typedef union {
-
-    struct {
+typedef struct {
         uint8_t id;
         uint8_t nbOfSprite;
         uint16_t len; 
-    } frame;
-
-    uint8_t byteMap[sizeof(frame)];
+} FrameActorMetaData;
+ typedef union {
+    FrameActorMetaData frame;
+    uint8_t byteMap[sizeof(FrameActorMetaData)];
 } ActorMetaData;
 
 /**
  * World header to get an id and control flags. 
  */
-typedef union {
-    struct {
+typedef struct {
         uint8_t id;
         uint8_t controlFlag;
         uint8_t backgroundColor;
         uint8_t nbOfTiles;
         uint32_t len;
-    } frame;
+} FrameWorldMetadata;
 
-    uint8_t byteMap[sizeof(frame)];
+typedef union {
+    FrameWorldMetadata frame;
+    uint8_t byteMap[sizeof(FrameWorldMetadata)];
 } WorldMetaData;
 
 /**
  * This metadata needs to directly follow the WorldMetaData times the nbOfTiles.
  */
-typedef union {
-    struct {
+typedef struct {
         uint8_t id;
         uint8_t collision:1;
         uint8_t event:1;
         uint8_t type:2;
         uint8_t reserved:4;
         uint16_t len;
-    } frame;
+} FrameWorldTileMetaData;
 
-    uint8_t byteMap[sizeof(frame)];
+typedef union {
+    FrameWorldTileMetaData frame;
+    uint8_t byteMap[sizeof(FrameWorldTileMetaData)];
 } WorldTileMetaData;
 
 
@@ -117,6 +126,4 @@ typedef union {
         /* ----------------------------*/
         //World with tiles ID
     } parameters;
-
-    uint8_t byteMap[sizeof(parameters)];
 } FileExample;
