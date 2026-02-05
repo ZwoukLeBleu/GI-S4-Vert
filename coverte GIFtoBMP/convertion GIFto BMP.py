@@ -4,7 +4,9 @@ from PIL import Image, UnidentifiedImageError
 import os
 import argparse
 
-def gif_to_bmp_auto(gif_path):
+
+def gif_to_bmp_auto(gif_path, r, g, b , a):
+    color = (r, g, b, a)
     #  CHARGEMENT DE L'IMAGE GIF (STATIQUE)
     # Conversion en RGBA pour gérer correctement la transparence
     img = Image.open(gif_path).convert("RGBA")
@@ -89,29 +91,27 @@ def gif_to_bmp_auto(gif_path):
         # Découpage du sprite
         sprite = img.crop(box)
         sw, sh = sprite.size
+        # Filtrer les sprites trop petits
+        if sw <= 4 or sh <= 1:
+            continue  # on passe ce sprite
 
+        # --- Changer le fond du sprite ---
+        # Couleur de fond souhaitée (exemple : blanc opaque)
+        new_bg_color = color  # nouvelle couleur RGBA
+
+        # Création d'une nouvelle image avec le fond désiré
+        new_sprite = Image.new("RGBA", (sw, sh), new_bg_color)
+        new_sprite.paste(sprite, (0, 0), mask=sprite)  # On garde la transparence
+        sprite = new_sprite
         # --- Forçage de la largeur multiple de 4 ---
         # Calcul du plus petit multiple de 4 supérieur ou égal
         new_width = (sw + 3) // 4 * 4
 
         if new_width != sw:
             # Création d'une nouvelle image avec padding transparent
-            padded = Image.new("RGBA", (new_width, sh), (0, 0, 0, 0))
+            padded = Image.new("RGBA", (new_width, sh), color)
             padded.paste(sprite, (0, 0))
             sprite = padded
-        #remplacer le fond par la couleur qu'on veut'
-        # Couleur de fond à remplacer (magenta)
-        old_bg = (255, 0, 255, 255)  # RGBA
-
-        # Nouvelle couleur de fond
-        new_bg = (255,255,128,255)
-
-        # Remplacement pixel par pixel
-        pixels_sprite = sprite.load()
-        for x in range(sprite.width):
-            for y in range(sprite.height):
-                if pixels_sprite[x, y] == old_bg:
-                    pixels_sprite[x, y] = new_bg
         # Sauvegarde en BMP
         sprite.save(
             os.path.join(output_dir, f"sprite_{i:03}.bmp"),
@@ -122,7 +122,10 @@ def gif_to_bmp_auto(gif_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--gif", '-g', help="Path d'image GIF")
-    #parser.add_argument("--bmp", '-b', help="Path d'image BMP")
+    parser.add_argument("--gif", '-gi', help="Path d'image GIF")
+    parser.add_argument("--red", '-r', type = int, default=255, help="le rouge de la couleur")
+    parser.add_argument("--green", '-g', type = int, default=255, help="le vert de la couleur")
+    parser.add_argument("--blue", '-b', type = int, default=255, help="le bleu de la couleur")
+    parser.add_argument("--alpha", '-a', type = int, default=255, help="le alpha de la couleur")
     args = parser.parse_args()
-    gif_to_bmp_auto(args.gif)
+    gif_to_bmp_auto(args.gif,args.red,args.green,args.blue,args.alpha)
