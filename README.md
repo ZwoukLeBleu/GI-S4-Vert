@@ -17,3 +17,14 @@
 
 ### Running the tests
 Call `run.py` with your environment that has VUnit installed. 
+
+
+# GBMP
+Is a custom compiler/processor for BMP files to binary data. 
+## Requirements
+- Python 3.9.x
+- OpenCV
+- NumPy
+```
+pip install opencv-python numpy
+```
