@@ -2,6 +2,8 @@ import argparse
 import numpy as np 
 import cv2
 import logging as log
+import os
+
 
 def folderread(path):
     """_summary_
@@ -36,13 +38,16 @@ def imageread(path: str) -> tuple[np.ndarray, int, int, int]:
     if img is None:
         log.error(f"Image at path {path} could not be read.")
         raise FileNotFoundError
+        return None
     height, width, channels = img.shape
     for y in range(height):
         for x in range(width):
             b, g, r = img[y, x]
             log.info(f"Pixel at ({x}, {y}): Blue={b}, Green={g}, Red={r}")
+    
+    process_header()
+    process_color_register(img=img)
 
-    process_color_register(img)
     return img
 
 def process_header():
@@ -52,15 +57,17 @@ def process_header():
 #         uint32_t reserved : 16;
 #         uint32_t fileLen;
 # } FrameFileMetaData;
-    file_version = np.uint8(0)
+    file_version = np.uint8(1)
     control_flags = np.uint8(0)
-    reserved = np.uint16(0)
+    reserved = np.uint16(0xFFFF)
     headings = np.uint32(file_version) << 24 | np.uint32(control_flags) << 16 | np.uint32(reserved)
-    file_len = np.uint32(0)
+    file_len = np.uint32(0xABCD1234)
+
+    write_data(headings, file_len)
 
     return headings, file_len
     
-def process_color_register(img: np.ndarray):
+def process_color_register(img):
     """_summary_
 
     Args:
@@ -77,7 +84,7 @@ def process_color_register(img: np.ndarray):
 # } Color;
 
 
-#     typedef union {
+# typedef union {
 #     struct {
 #         Color colorMask;
 #         Color colors[15];
@@ -100,6 +107,7 @@ def process_color_register(img: np.ndarray):
             
             log.info(f"Color ID={color_id}, Code={color_code:08X}")
 
+    write_data(color_mask, colors)
     return color_mask, colors
     
 def process_actors():
@@ -128,9 +136,22 @@ def process_actors():
 #     FrameActorMetaData frame;
 #     uint8_t byteMap[sizeof(FrameActorMetaData)];
 # } ActorMetaData;
+    pass
 
+def write_data(*args):
+    with open("game.bin", "ab") as f:
+        for data in args:
+            if type(data) == np.ndarray:
+                log.info(f"Writing data array: {hex(data[0])} ... {hex(data[-1])} (totals {data.size} elements)")
+            else:
+                log.info(f"Writing data: {hex(data) if isinstance(data, (int, np.integer)) else data}")
 
-
+            if type(data) == np.ndarray:
+                f.write(data.tobytes())
+            elif type(data) == int:
+                f.write(data.to_bytes((data.bit_length() + 7) // 8 or 1, byteorder='big'))
+            else:
+                f.write(data.tobytes())
 
 
 def main():
@@ -140,15 +161,26 @@ def main():
     parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose logging.')
     args = parser.parse_args()
     
+     # delete existing file if it exists
+    if os.path.exists("game.bin"):
+        os.remove("game.bin")
+
     if args.verbose:
-        log.basicConfig(level=log.INFO)
+        log.basicConfig(format='%(levelname)s: %(message)s', level=log.INFO)
+        # log.basicConfig(level=log.INFO)
 
     if args.directory:
         folderread(args.directory)
     elif args.file:
         imageread(args.file)
+        
     else:
         log.error("Provide either a directory or a file path as arguments.")
+
+    
+
+
+    print("Processing complete!")
 
 
 

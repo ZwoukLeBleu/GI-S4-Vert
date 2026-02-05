@@ -208,3 +208,8 @@ __marimo__/
 
 
 vunit_out/
+
+*.bmp
+*.bin
+
+.idea/
