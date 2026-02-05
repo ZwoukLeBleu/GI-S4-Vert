@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define FILE_VERSION 1
+#define FILE_VERSION 2
 #define FILE_NAME "Game.bin"
 
 
@@ -51,7 +51,8 @@ typedef union {
 typedef struct {
         uint32_t nbOfActors:8;
         uint32_t playerActorId:8;
-        uint32_t reserved:16;
+        uint32_t lifeBar:8;
+        uint32_t reserved:8;
 } FrameActorsHeader;
 
 typedef union {
@@ -71,6 +72,18 @@ typedef struct {
     FrameActorMetaData frame;
     uint8_t byteMap[sizeof(FrameActorMetaData)];
 } ActorMetaData;
+
+typedef struct {
+    uint32_t tilesWidth:8;
+    uint32_t tilesHeight:8;
+    uint32_t nbOfTiles:8;
+    uint32_t reserved:8;
+} FrameActorsTileMeta;
+
+typedef union {
+    FrameActorsTileMeta frame;
+    uint8_t byteMap[sizeof(FrameActorsTileMeta)];
+} ActorsTileMetaData;
 
 /**
  * World header to get an id and control flags. 
