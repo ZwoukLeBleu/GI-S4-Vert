@@ -3,9 +3,9 @@ from logging import exception
 from PIL import Image, UnidentifiedImageError
 import os
 import argparse
+import math
 
-
-def gif_to_bmp_auto(gif_path, r, g, b , a):
+def gif_to_bmp_auto(gif_path, r, g, b , a, tuile):
     color = (r, g, b, a)
     #  CHARGEMENT DE L'IMAGE GIF (STATIQUE)
     # Conversion en RGBA pour gérer correctement la transparence
@@ -87,36 +87,51 @@ def gif_to_bmp_auto(gif_path, r, g, b , a):
     os.makedirs(output_dir, exist_ok=True)
 
     # EXTRACTION, AJUSTEMENT MODULO 4 ET SAUVEGARDE BMP
+    TILE_SIZE = tuile
+
     for i, box in enumerate(sprites):
-        # Découpage du sprite
         sprite = img.crop(box)
         sw, sh = sprite.size
-        # Filtrer les sprites trop petits
-        if sw <= 4 or sh <= 1:
-            continue  # on passe ce sprite
 
-        # --- Changer le fond du sprite ---
-        # Couleur de fond souhaitée (exemple : blanc opaque)
-        new_bg_color = color  # nouvelle couleur RGBA
-
-        # Création d'une nouvelle image avec le fond désiré
-        new_sprite = Image.new("RGBA", (sw, sh), new_bg_color)
-        new_sprite.paste(sprite, (0, 0), mask=sprite)  # On garde la transparence
+        # --- changer le fond ---
+        new_sprite = Image.new("RGBA", (sw, sh), color)
+        new_sprite.paste(sprite, (0, 0), mask=sprite)
         sprite = new_sprite
-        # --- Forçage de la largeur multiple de 4 ---
-        # Calcul du plus petit multiple de 4 supérieur ou égal
-        new_width = (sw + 3) // 4 * 4
 
-        if new_width != sw:
-            # Création d'une nouvelle image avec padding transparent
-            padded = Image.new("RGBA", (new_width, sh), color)
-            padded.paste(sprite, (0, 0))
-            sprite = padded
-        # Sauvegarde en BMP
-        sprite.save(
-            os.path.join(output_dir, f"sprite_{i:03}.bmp"),
-            format="BMP"
-        )
+        # --- dossier du sprite ---
+        sprite_dir = os.path.join(output_dir, f"sprite_{i:03}")
+        os.makedirs(sprite_dir, exist_ok=True)
+
+        tiles_x = math.ceil(sw / TILE_SIZE)
+        tiles_y = math.ceil(sh / TILE_SIZE)
+
+        tile_index = 0
+
+        for ty in range(tiles_y):
+            for tx in range(tiles_x):
+                x = tx * TILE_SIZE
+                y = ty * TILE_SIZE
+
+                # tuile 16x16 avec fond
+                tile = Image.new("RGBA", (TILE_SIZE, TILE_SIZE), color)
+
+                # zone réelle à copier depuis le sprite
+                crop_box = (
+                    x,
+                    y,
+                    min(x + TILE_SIZE, sw),
+                    min(y + TILE_SIZE, sh)
+                )
+
+                part = sprite.crop(crop_box)
+                tile.paste(part, (0, 0))
+
+                # BMP = largeur multiple de 4 (16 OK, mais on garde la sécurité)
+                tile.save(
+                    os.path.join(sprite_dir, f"tile_{tile_index:03}.bmp"),
+                    format="BMP"
+                )
+                tile_index += 1
 
     print(f"✔️ {len(sprites)} sprites BMP générés (largeur multiple de 4)")
 
@@ -127,5 +142,9 @@ if __name__ == '__main__':
     parser.add_argument("--green", '-g', type = int, default=255, help="le vert de la couleur")
     parser.add_argument("--blue", '-b', type = int, default=255, help="le bleu de la couleur")
     parser.add_argument("--alpha", '-a', type = int, default=255, help="le alpha de la couleur")
+    parser.add_argument("--tuile", '-t', type=int, default=16, help="longeur et largeur d'une tuile")
     args = parser.parse_args()
-    gif_to_bmp_auto(args.gif,args.red,args.green,args.blue,args.alpha)
+    gif_to_bmp_auto(args.gif,args.red,args.green,args.blue,args.alpha, args.tuile)
+
+    # voici un exemple dans mon cas. path de l'empacement de compialtion , path du gif , couleur rouge , couleur verte , couleur blue , alpha et mesure d'une tuile.
+    #python "C:\Users\willi\Desktop\GI-S4-Vert\coverte GIFtoBMP\convertion GIFto BMP.py" --gif "C:\Users\willi\Desktop\1NES - Kung Fu - Miscellaneous - Characters.gif" --red 255 --green 0 --blue 255 --alpha 255 --tuile 16
