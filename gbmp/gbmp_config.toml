@@ -1,0 +1,16 @@
+# GBMP configuration file
+version = 1
+number_of_actors = 3
+colormap_path = "colormap.txt"
+
+output_file = "game.bin"
+verbose = false
+
+[actor]
+player_actor_id = 0
+# life_bar = 2 # ?
+actors = [
+    { id = 1, name = "Player", sprite_count = 4, len = 2 },
+    { id = 2, name = "Enemy1", sprite_count = 2, len = 2},
+    { id = 3, name = "Enemy2", sprite_count = 4, len = 3 }
+]
