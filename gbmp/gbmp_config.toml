@@ -6,6 +6,8 @@ colormap_path = "colormap.txt"
 output_file = "game.bin"
 verbose = false
 
+tilesize = 16
+
 [actor]
 player_actor_id = 0
 # life_bar = 2 # ?
