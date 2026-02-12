@@ -8,6 +8,15 @@ verbose = false
 
 tilesize = 16
 
+[world]
+tilesid = [
+    { id = 0, event = 0, collision = 0, tile_type = 0 },
+    { id = 1, event = 0, collision = 0, tile_type = 0 },
+    { id = 2, event = 0, collision = 0, tile_type = 0 },
+]
+
+
+
 [actor]
 player_actor_id = 0
 # life_bar = 2 # ?

@@ -29,27 +29,26 @@ def dirread(path):
     for filename in os.listdir(path):
         full_path = os.path.join(path, filename)
         if os.path.isdir(full_path):
-            log.info(f"Entering directory: {full_path}")
+            # log.info(f"Entering directory: {full_path}")
             dirread(full_path)
         elif filename.lower().endswith('.bmp'):
-            log.info(f"Reading image: {full_path}")
+            # log.info(f"Reading image: {full_path}")
             imageread(full_path)
         else:
             log.info(f"Skipping non-BMP file: {filename}")
 
-def dirinfo(path):
+def dirinfo(path, files=[], dirs=[], tilesize=16, level=0):
     
-    files = []
-    dirs = []
     tilesize = CONFIG.get('tilesize', 16)
     for filename in os.listdir(path):
         full_path = os.path.join(path, filename)
         if os.path.isdir(full_path):
             dirs.append(full_path)
-            dirinfo(full_path)
+            dirinfo(full_path, files, dirs, tilesize, level=1)
         elif filename.lower().endswith('.bmp'):
             files.append(full_path)
-    log.info(f"Directory {path} contains {len(files)} BMP files and {len(dirs)} subdirectories.")
+    if level == 0:
+        log.info(f"The sum of {path} contains {len(files)} BMP files and {len(dirs)} subdirectories.")
     return files, dirs, tilesize
 
 
@@ -92,24 +91,26 @@ def process_header():
 #         uint32_t reserved : 16;
 #         uint32_t fileLen;
 # } FrameFileMetaData;
-    log.info("========== Processing header ==========")
+    log.info("\n==================== Processing header ====================")
+    actor_config = CONFIG.get('actor', {})
+    actors = actor_config.get('actors', [])
+    nb_of_actors = len(actors)
+    # Get player_actor_id from config or first actor if available, else 0
+    player_actor_id = actor_config.get('player_actor_id', actors[0].get('id', 0) if actors else 0)
+    life_bar = CONFIG.get('life_bar', 1)
+    reserved = 0xFF
 
-    file_version = CONFIG.get('version', 1)
-    control_flags = 0
-    reserved = 0xFFFF
-    file_len = 0x3
-    headings = struct.pack('<BBHI', file_version, control_flags, reserved, file_len)
-    write_data(headings)
+    actors_header = struct.pack('BBBB', nb_of_actors, player_actor_id, life_bar, reserved)
+    log.info(f"Actor header: nb_of_actors={nb_of_actors}, player_actor_id={player_actor_id}, life_bar={life_bar}, reserved={reserved}")
+    write_data(actors_header)
 
-    # return headings, file_len
-    
-def process_color_register():
-    """Process color register, optionally using a colormap file.
-
-    Args:
-        img (np.ndarray): Image array
-        colormap_path (str or None):] a
-    """
+    for actor in actors:
+        actor_id = actor.get('id', 0)
+        nb_of_sprite = actor.get('sprite_count', actor.get('nbOfSprite', 1))
+        length = actor.get('len', 0)
+        meta = struct.pack('BBH', actor_id, nb_of_sprite, length)
+        log.info(f"Actor metadata: id={actor_id}, nb_of_sprite={nb_of_sprite}, length={length}")
+        write_data(meta)
 # typedef union {
 #     uint32_t code; // The entire 32-bit block
 #     struct {
@@ -129,7 +130,8 @@ def process_color_register():
 
 #     uint8_t byteMap[sizeof(Color) * 16];
 # } ColorRegiste
-    log.info("========== Processing color register ==========")
+def process_color_register():
+    log.info("\n==================== Processing color register ====================")
     color_mask = 0  # FIXME: define color mask properly (not 0!!!)
     height, width, channels = IMAGE.shape
     unique_rgbs = set()
@@ -171,20 +173,24 @@ def process_color_register():
                     colors.append(color_code)
                     log.info(f"Added color code: {color_code:08X} (R={r}, G={g}, B={b})")
     packed_colors = struct.pack('<I', color_mask)
+
+    # color_mask = colors[0]
+    # i=1
     for color in colors:
         packed_colors += struct.pack('<I', color)
     while len(colors) < 15:
         packed_colors += struct.pack('<I', 0)
         colors.append(0)
+    log.info(f"Final color register: color_mask={color_mask:08X}, colors={[f'{c:08X}' for c in colors]}")
     write_data(packed_colors)
-    # return color_mask, colors
 
     
 def process_actor_header():
 #     typedef struct {
 #         uint32_t nbOfActors:8;
 #         uint32_t playerActorId:8;
-#         uint32_t lifeBar:8;
+#       
+#   uint32_t lifeBar:8;
 #         uint32_t reserved:8;
 # } FrameActorsHeader;
 
@@ -192,15 +198,18 @@ def process_actor_header():
 #     FrameActorsHeader frame;
 #     uint8_t byteMap[sizeof(FrameActorsHeader)];
 # } ActorsHeader;
-    log.info("========== Processing actor header ==========")
+    log.info("\n==================== Processing actor header ====================")
 
-    actors = CONFIG.get('actors', [])
+
+    actors = CONFIG.get('actor', {}).get('actors', [])    
     nb_of_actors = len(actors)
-    player_actor_id = CONFIG.get('player_actor_id', 0)
+    # Get player_actor_id from first actor if available, else 0
+    player_actor_id = actors[0].get('id', 0) if actors else 0
     life_bar = CONFIG.get('life_bar', 1)
     reserved = 0xFF
 
     actors_header = struct.pack('BBBB', nb_of_actors, player_actor_id, life_bar, reserved)
+    log.info(f"Actor header: nb_of_actors={nb_of_actors}, player_actor_id={player_actor_id}, life_bar={life_bar}, reserved={reserved}")
     write_data(actors_header)
 
     for actor in actors:
@@ -208,15 +217,11 @@ def process_actor_header():
         nb_of_sprite = actor.get('nbOfSprite', 1)
         length = actor.get('len', 0)
         meta = struct.pack('BBH', actor_id, nb_of_sprite, length)
+        log.info(f"Actor metadata: id={actor_id}, nb_of_sprite={nb_of_sprite}, length={length}")
         write_data(meta)
 
-        sprite_data = b'\x01\x02\x03\x04' * (length // 4) # FIXME: Actual sprites
-        sprite_data = pad_to_4_bytes(sprite_data)
-        write_data(sprite_data)
 
-    # return
-
-def process_word_header():
+def process_world_header():
 # /**
 #  * World header to get an id and control flags. 
 #  */
@@ -232,20 +237,22 @@ def process_word_header():
 #     FrameWorldMetadata frame;
 #     uint8_t byteMap[sizeof(FrameWorldMetadata)];
 # } WorldMetaData;
-    log.info("========== Processing world header ==========")
+    log.info("\n==================== Processing world header ====================")
 
     files, dirs, tilesize = dirinfo(ARGS.directory) if ARGS.directory else ([], [])
-
+    
     world_id = np.uint8(0)
     control_flag = np.uint8(0)
     background_color = np.uint8(0)
     nb_of_tiles = np.uint8(len(files) % 256)                    # FIXME: Cant handle more than 255 tiles. Fix necessary?
-    length = np.uint32((tilesize ** 2 * len(files) % 2**32))    # FIXME: Cant handle more than ~4GB of data. Fix necessary?
+    length = np.uint32((tilesize ** 2) * len(files) % 0xFFFFFFFF)
     world_header = struct.pack('BBBBI', world_id, control_flag, background_color, nb_of_tiles, length)
+    # log.info(f"{ARGS.directory}")
+    log.info(f"World header: id={world_id}, control_flag={control_flag}, background_color={background_color}, nb_of_tiles={nb_of_tiles}, length={length}")
     write_data(world_header)
 
 
-def process_word_tile_metadata():
+def process_world_tile_metadata():
 #     /**
 #  * This metadata needs to directly follow the WorldMetaData times the nbOfTiles.
 #  */
@@ -262,15 +269,29 @@ def process_word_tile_metadata():
 #     FrameWorldTileMetaData frame;
 #     uint8_t byteMap[sizeof(FrameWorldTileMetaData)];
 # } WorldTileMetaData;
-    log.info("========== Processing world tile metadata ==========")
-    tile_id = np.uint8(0)
-    collision = np.uint8(0)
-    event = np.uint8(0)
-    tile_type = np.uint8(0)
-    reserved = np.uint8(0xF)
-    length = np.uint16(0)
-    tile_metadata = struct.pack('BBH', tile_id, (collision << 7) | (event << 6) | (tile_type << 4) | reserved, length)
-    write_data(tile_metadata)
+    log.info("\n==================== Processing world tile metadata ====================")      # FIXME: Utiliser ficher de config !!!
+    world = CONFIG.get('world', {})
+
+    for tile in world.get('tilesid', []):
+        tile_id = np.uint8(tile.get('id', 0))
+        collision = np.uint8(tile.get('collision', 0))
+        event = np.uint8(tile.get('event', 0))
+        tile_type = np.uint8(tile.get('tile_type', 0))
+        reserved = np.uint8(0xF)
+        length = np.uint16(0)
+        tile_metadata = struct.pack('BBH', tile_id, (collision << 7) | (event << 6) | (tile_type << 4) | reserved, length)
+        log.info(f"Tile metadata: id={tile_id}, collision={collision}, event={event}, type={tile_type}, reserved={reserved}, length={length}")
+        write_data(tile_metadata)
+    
+    # tile_id = np.uint8(0)
+    # collision = np.uint8(0)
+    # event = np.uint8(0)
+    # tile_type = np.uint8(0)
+    # reserved = np.uint8(0xF)
+    # length = np.uint16(0)
+    # tile_metadata = struct.pack('BBH', tile_id, (collision << 7) | (event << 6) | (tile_type << 4) | reserved, length)
+    # log.info(f"Tile metadata: id={tile_id}, collision={collision}, event={event}, type={tile_type}, reserved={reserved}, length={length}")
+    # write_data(tile_metadata)
 
 def process_data():
     if ARGS.directory:
@@ -281,8 +302,8 @@ def process_data():
     process_header()
     process_color_register()
     process_actor_header()
-    process_word_header()
-    process_word_tile_metadata()
+    process_world_header()
+    process_world_tile_metadata()
 
     print("Processing complete!")
 
