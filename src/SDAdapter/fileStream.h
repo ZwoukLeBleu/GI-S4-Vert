@@ -3,8 +3,10 @@
 
 #include <stdint.h>
 
-#define FILE_VERSION 2
+#define FILE_VERSION 3
 #define FILE_NAME "Game.bin"
+#define WORLD_TILE 16
+#define WORLD_LEN 4194304
 
 
 /**
@@ -92,7 +94,7 @@ typedef struct {
         uint8_t id;
         uint8_t controlFlag;
         uint8_t backgroundColor;
-        uint8_t nbOfTiles;
+        uint8_t reserved;
         uint32_t len;
 } FrameWorldMetadata;
 
@@ -104,6 +106,17 @@ typedef union {
 /**
  * This metadata needs to directly follow the WorldMetaData times the nbOfTiles.
  */
+
+typedef struct {
+    uint16_t nbOfTiles;
+    uint16_t len;
+} FrameWorldTilesHeader;
+
+typedef union {
+    FrameWorldTilesHeader frame;
+    uint8_t byteMap[sizeof(FrameWorldTilesHeader)];
+} WorldTilesHeader;
+
 typedef struct {
         uint8_t id;
         uint8_t collision:1;
@@ -132,11 +145,15 @@ typedef union {
         ActorMetaData actor0;
         //actor0 sprites %4
         /* ----------------------------*/
-        WorldMetaData world;
+        WorldTilesHeader tilesHeader;
         /* -- TIMES THE NB OF TILES --*/
         WorldTileMetaData tileMeta;
-        //tiles bmp %4
+        //WORD TILE WITH ID %4
+        WorldMetaData world;
+        // ID OF TILES in bit map % 4
         /* ----------------------------*/
         //World with tiles ID
     } parameters;
+    
+    uint8_t b[sizeof(parameters)];
 } FileExample;
