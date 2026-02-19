@@ -4,7 +4,10 @@
 #include <stdint.h>
 
 #define FILE_VERSION 3
+#define FILE_VERSION 3
 #define FILE_NAME "Game.bin"
+#define WORLD_TILE 16
+#define WORLD_LEN 4194304
 #define WORLD_TILE 16
 #define WORLD_LEN 4194304
 
@@ -55,6 +58,8 @@ typedef struct {
         uint32_t playerActorId:8;
         uint32_t lifeBar:8;
         uint32_t reserved:8;
+        uint32_t lifeBar:8;
+        uint32_t reserved:8;
 } FrameActorsHeader;
 
 typedef union {
@@ -87,6 +92,18 @@ typedef union {
     uint8_t byteMap[sizeof(FrameActorsTileMeta)];
 } ActorsTileMetaData;
 
+typedef struct {
+    uint32_t tilesWidth:8;
+    uint32_t tilesHeight:8;
+    uint32_t nbOfTiles:8;
+    uint32_t reserved:8;
+} FrameActorsTileMeta;
+
+typedef union {
+    FrameActorsTileMeta frame;
+    uint8_t byteMap[sizeof(FrameActorsTileMeta)];
+} ActorsTileMetaData;
+
 /**
  * World header to get an id and control flags. 
  */
@@ -94,6 +111,7 @@ typedef struct {
         uint8_t id;
         uint8_t controlFlag;
         uint8_t backgroundColor;
+        uint8_t reserved;
         uint8_t reserved;
         uint32_t len;
 } FrameWorldMetadata;
@@ -106,6 +124,17 @@ typedef union {
 /**
  * This metadata needs to directly follow the WorldMetaData times the nbOfTiles.
  */
+
+typedef struct {
+    uint16_t nbOfTiles;
+    uint16_t len;
+} FrameWorldTilesHeader;
+
+typedef union {
+    FrameWorldTilesHeader frame;
+    uint8_t byteMap[sizeof(FrameWorldTilesHeader)];
+} WorldTilesHeader;
+
 
 typedef struct {
     uint16_t nbOfTiles;
