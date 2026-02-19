@@ -161,6 +161,9 @@ def main():
     else:
         log.error("Provide either a directory or a file path as arguments.")
 
+    log.info(f"Color palette used: {COLOUR_PALETTE}")
+    log.info("Processing completed.")
+
 
 if __name__ == "__main__":
     main()

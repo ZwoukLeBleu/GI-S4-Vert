@@ -135,25 +135,25 @@ typedef union {
 /**
  * WARNING - EVERY LEN OF sprites needs to have a len_byte % 4 = 0
  */
-typedef union {
-    struct {
-        FileMetaData data;
-        ColorRegister colors;
-        ActorsHeader actorHeader;
+// typedef union {
+//     struct {
+//         FileMetaData data;
+//         ColorRegister colors;
+//         ActorsHeader actorHeader;
 
-        /* -- TIMES THE NB OF ACTORS --*/
-        ActorMetaData actor0;
-        //actor0 sprites %4
-        /* ----------------------------*/
-        WorldTilesHeader tilesHeader;
-        /* -- TIMES THE NB OF TILES --*/
-        WorldTileMetaData tileMeta;
-        //WORD TILE WITH ID %4
-        WorldMetaData world;
-        // ID OF TILES in bit map % 4
-        /* ----------------------------*/
-        //World with tiles ID
-    } parameters;
+//         /* -- TIMES THE NB OF ACTORS --*/
+//         ActorMetaData actor0;
+//         //actor0 sprites %4
+//         /* ----------------------------*/
+//         WorldTilesHeader tilesHeader;
+//         /* -- TIMES THE NB OF TILES --*/
+//         WorldTileMetaData tileMeta;
+//         //WORD TILE WITH ID %4
+//         WorldMetaData world;
+//         // ID OF TILES in bit map % 4
+//         /* ----------------------------*/
+//         //World with tiles ID
+//     } parameters;
     
-    uint8_t b[sizeof(parameters)];
-} FileExample;
+//     uint8_t b[sizeof(parameters)];
+// } FileExample;
