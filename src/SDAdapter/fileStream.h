@@ -58,8 +58,6 @@ typedef struct {
         uint32_t playerActorId:8;
         uint32_t lifeBar:8;
         uint32_t reserved:8;
-        uint32_t lifeBar:8;
-        uint32_t reserved:8;
 } FrameActorsHeader;
 
 typedef union {
@@ -92,17 +90,6 @@ typedef union {
     uint8_t byteMap[sizeof(FrameActorsTileMeta)];
 } ActorsTileMetaData;
 
-typedef struct {
-    uint32_t tilesWidth:8;
-    uint32_t tilesHeight:8;
-    uint32_t nbOfTiles:8;
-    uint32_t reserved:8;
-} FrameActorsTileMeta;
-
-typedef union {
-    FrameActorsTileMeta frame;
-    uint8_t byteMap[sizeof(FrameActorsTileMeta)];
-} ActorsTileMetaData;
 
 /**
  * World header to get an id and control flags. 
@@ -111,7 +98,6 @@ typedef struct {
         uint8_t id;
         uint8_t controlFlag;
         uint8_t backgroundColor;
-        uint8_t reserved;
         uint8_t reserved;
         uint32_t len;
 } FrameWorldMetadata;
@@ -135,16 +121,6 @@ typedef union {
     uint8_t byteMap[sizeof(FrameWorldTilesHeader)];
 } WorldTilesHeader;
 
-
-typedef struct {
-    uint16_t nbOfTiles;
-    uint16_t len;
-} FrameWorldTilesHeader;
-
-typedef union {
-    FrameWorldTilesHeader frame;
-    uint8_t byteMap[sizeof(FrameWorldTilesHeader)];
-} WorldTilesHeader;
 
 typedef struct {
         uint8_t id;

@@ -13,7 +13,7 @@ path = "clamped/worlds/"
 tilesid = [
     { id = 0, event = 0, collision = 0, tile_type = 0 },
     { id = 1, event = 0, collision = 0, tile_type = 0 },
-    { id = 2, event = 0, collision = 0, tile_type = 0 },
+    { id = 2, event = 0, collision = 0, tile_type = 0 }
 ]
 map_file = "worldmap.bin"
 
@@ -26,6 +26,7 @@ player_actor_id = 0
 actors = [
     { id = 1, name = "Player", sprite_count = 4, len = 2 },
     { id = 2, name = "Enemy1", sprite_count = 2, len = 2},
-    { id = 3, name = "Enemy2", sprite_count = 4, len = 3 }
+    { id = 3, name = "Enemy2", sprite_count = 4, len = 3 },
+    { id = 4, name = "Enemy3", sprite_count = 1, len = 1 }
 ]
 
