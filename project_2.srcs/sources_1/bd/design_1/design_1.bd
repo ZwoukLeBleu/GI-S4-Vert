@@ -20,7 +20,6 @@
       "v_proc_ss_0": "",
       "smartconnect_0": "",
       "myColorRegister_0": "",
-      "fullRamReg_0": "",
       "smartconnect_1": "",
       "testPatternGenerator_0": ""
     },
@@ -1688,37 +1687,6 @@
         "xci_path": "ip\\design_1_myColorRegister_0_0\\design_1_myColorRegister_0_0.xci",
         "inst_hier_path": "myColorRegister_0"
       },
-      "fullRamReg_0": {
-        "vlnv": "xilinx.com:user:fullRamReg:1.0",
-        "xci_name": "design_1_fullRamReg_0_0",
-        "xci_path": "ip\\design_1_fullRamReg_0_0\\design_1_fullRamReg_0_0.xci",
-        "inst_hier_path": "fullRamReg_0",
-        "interface_ports": {
-          "M00_AXI": {
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
-            "mode": "Master",
-            "address_space_ref": "M00_AXI",
-            "base_address": {
-              "minimum": "0x00000000",
-              "maximum": "0xFFFFFFFF",
-              "width": "32"
-            },
-            "parameters": {
-              "master_id": {
-                "value": "2"
-              }
-            }
-          }
-        },
-        "addressing": {
-          "address_spaces": {
-            "M00_AXI": {
-              "range": "4G",
-              "width": "32"
-            }
-          }
-        }
-      },
       "smartconnect_1": {
         "vlnv": "xilinx.com:ip:smartconnect:1.0",
         "xci_name": "design_1_smartconnect_1_0",
@@ -1915,41 +1883,11 @@
             "direction": "I",
             "left": "31",
             "right": "0"
-          },
-          "o_address": {
-            "direction": "O",
-            "left": "31",
-            "right": "0"
-          },
-          "o_len": {
-            "direction": "O",
-            "left": "7",
-            "right": "0"
-          },
-          "o_execute": {
-            "direction": "O"
-          },
-          "i_done": {
-            "direction": "I"
-          },
-          "i_fetchDone": {
-            "direction": "I"
-          },
-          "i_ramData": {
-            "direction": "I",
-            "left": "31",
-            "right": "0"
           }
         }
       }
     },
     "interface_nets": {
-      "fullRamReg_0_M00_AXI": {
-        "interface_ports": [
-          "smartconnect_1/S00_AXI",
-          "fullRamReg_0/M00_AXI"
-        ]
-      },
       "processing_system7_0_DDR": {
         "interface_ports": [
           "DDR",
@@ -2038,7 +1976,6 @@
           "v_proc_ss_0/aclk_axis",
           "v_proc_ss_0/aclk_ctrl",
           "myColorRegister_0/s00_axi_aclk",
-          "fullRamReg_0/m00_axi_aclk",
           "smartconnect_1/aclk1",
           "testPatternGenerator_0/clk"
         ]
@@ -2050,24 +1987,6 @@
           "v_axi4s_vid_out_0/aclken",
           "v_axi4s_vid_out_0/vid_io_out_ce",
           "v_tc_0/clken"
-        ]
-      },
-      "fullRamReg_0_o_done": {
-        "ports": [
-          "fullRamReg_0/o_done",
-          "testPatternGenerator_0/i_done"
-        ]
-      },
-      "fullRamReg_0_o_rdata": {
-        "ports": [
-          "fullRamReg_0/o_rdata",
-          "testPatternGenerator_0/i_ramData"
-        ]
-      },
-      "fullRamReg_0_o_rvalid": {
-        "ports": [
-          "fullRamReg_0/o_rvalid",
-          "testPatternGenerator_0/i_fetchDone"
         ]
       },
       "myColorRegister_0_o_imageDataA": {
@@ -2090,7 +2009,6 @@
           "v_axi4s_vid_out_0/aresetn",
           "v_proc_ss_0/aresetn_ctrl",
           "myColorRegister_0/s00_axi_aresetn",
-          "fullRamReg_0/m00_axi_aresetn",
           "testPatternGenerator_0/rstn"
         ]
       },
@@ -2112,24 +2030,6 @@
         "ports": [
           "sys_clock",
           "clk_wiz_0/clk_in1"
-        ]
-      },
-      "testPatternGenerator_0_o_address": {
-        "ports": [
-          "testPatternGenerator_0/o_address",
-          "fullRamReg_0/i_address"
-        ]
-      },
-      "testPatternGenerator_0_o_execute": {
-        "ports": [
-          "testPatternGenerator_0/o_execute",
-          "fullRamReg_0/m00_axi_init_axi_txn"
-        ]
-      },
-      "testPatternGenerator_0_o_len": {
-        "ports": [
-          "testPatternGenerator_0/o_len",
-          "fullRamReg_0/i_len"
         ]
       },
       "v_axi4s_vid_out_0_sof_state_out": {
