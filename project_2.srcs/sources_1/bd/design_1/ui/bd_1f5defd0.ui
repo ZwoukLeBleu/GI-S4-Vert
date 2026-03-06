@@ -1,53 +1,58 @@
 {
    "ActiveEmotionalView":"Default View",
-   "Default View_ScaleFactor":"1.01532",
-   "Default View_TopLeft":"527,-60",
+   "Default View_ScaleFactor":"0.717936",
+   "Default View_TopLeft":"669,-259",
    "ExpandedHierarchyInLayout":"",
-   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:10.0 non-TLS
+   "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
 #  -string -flagsOSRD
-preplace port DDR -pg 1 -lvl 10 -x 3050 -y 60 -defaultsOSRD
-preplace port FIXED_IO -pg 1 -lvl 10 -x 3050 -y 90 -defaultsOSRD
-preplace port hdmi_out -pg 1 -lvl 10 -x 3050 -y 560 -defaultsOSRD
-preplace port port-id_sys_clock -pg 1 -lvl 0 -x -10 -y 360 -defaultsOSRD
-preplace port port-id_reset_rtl -pg 1 -lvl 0 -x -10 -y 280 -defaultsOSRD
-preplace inst processing_system7_0 -pg 1 -lvl 5 -x 1450 -y 110 -defaultsOSRD
+preplace port DDR -pg 1 -lvl 9 -x 3070 -y 60 -defaultsOSRD
+preplace port FIXED_IO -pg 1 -lvl 9 -x 3070 -y 90 -defaultsOSRD
+preplace port hdmi_out -pg 1 -lvl 9 -x 3070 -y 560 -defaultsOSRD
+preplace port port-id_sys_clock -pg 1 -lvl 0 -x -90 -y 360 -defaultsOSRD
+preplace port port-id_reset_rtl -pg 1 -lvl 0 -x -90 -y 280 -defaultsOSRD
 preplace inst clk_wiz_0 -pg 1 -lvl 1 -x 110 -y 350 -defaultsOSRD
-preplace inst proc_sys_reset_0 -pg 1 -lvl 2 -x 390 -y 300 -defaultsOSRD
-preplace inst v_tc_0 -pg 1 -lvl 7 -x 2310 -y 580 -defaultsOSRD
-preplace inst v_axi4s_vid_out_0 -pg 1 -lvl 8 -x 2660 -y 610 -defaultsOSRD
-preplace inst rgb2dvi_0 -pg 1 -lvl 9 -x 2930 -y 560 -defaultsOSRD
-preplace inst v_proc_ss_0 -pg 1 -lvl 7 -x 2310 -y 370 -defaultsOSRD
-preplace inst smartconnect_0 -pg 1 -lvl 6 -x 1890 -y 170 -defaultsOSRD
-preplace inst myColorRegister_0 -pg 1 -lvl 7 -x 2310 -y 200 -defaultsOSRD
-preplace inst smartconnect_1 -pg 1 -lvl 4 -x 1090 -y 100 -defaultsOSRD
-preplace inst testPatternGenerator_0 -pg 1 -lvl 6 -x 1890 -y 360 -defaultsOSRD
-preplace netloc Net 1 3 3 780 10 1240 220 1670
-preplace netloc clk_wiz_0_clk_out1 1 1 8 200 190 N 190 780 190 1230J 240 1690 70 2050 680 2480 740 2820J
-preplace netloc clk_wiz_0_locked 1 1 7 210 200 NJ 200 NJ 200 1220J 260 NJ 260 2030 470 2470
-preplace netloc myColorRegister_0_o_imageDataA 1 5 3 1710 40 NJ 40 2480
-preplace netloc myColorRegister_0_o_imageDataB 1 5 3 1720 60 NJ 60 2470
-preplace netloc proc_sys_reset_0_peripheral_aresetn 1 2 7 N 340 NJ 340 NJ 340 1700 270 2060 690 2490 750 2810J
-preplace netloc processing_system7_0_FCLK_RESET0_N 1 3 3 790 230 NJ 230 1660
-preplace netloc reset_rtl_1 1 0 2 10 280 NJ
+preplace inst proc_sys_reset_0 -pg 1 -lvl 2 -x 480 -y 300 -defaultsOSRD
+preplace inst v_tc_0 -pg 1 -lvl 6 -x 2340 -y 580 -defaultsOSRD
+preplace inst v_axi4s_vid_out_0 -pg 1 -lvl 7 -x 2690 -y 610 -defaultsOSRD
+preplace inst v_proc_ss_0 -pg 1 -lvl 6 -x 2340 -y 370 -defaultsOSRD
+preplace inst smartconnect_0 -pg 1 -lvl 5 -x 1910 -y 170 -defaultsOSRD
+preplace inst testPatternGenerator_0 -pg 1 -lvl 5 -x 1910 -y 360 -defaultsOSRD
+preplace inst myColorRegister_0 -pg 1 -lvl 6 -x 2340 -y 200 -defaultsOSRD
+preplace inst processing_system7_0 -pg 1 -lvl 4 -x 1470 -y 110 -defaultsOSRD
+preplace inst rgb2dvi_0 -pg 1 -lvl 8 -x 2950 -y 560 -defaultsOSRD
+preplace inst axi_vdma_0 -pg 1 -lvl 3 -x 960 -y -90 -defaultsOSRD
+preplace inst axi_mem_intercon -pg 1 -lvl 6 -x 2340 -y -150 -defaultsOSRD
+preplace inst rst_ps7_0_50M -pg 1 -lvl 5 -x 1910 -y -100 -defaultsOSRD
+preplace netloc clk_wiz_0_locked 1 1 6 210 460 NJ 460 N 460 NJ 460 2100 680 2550
+preplace netloc myColorRegister_0_o_imageDataA 1 4 3 1720 50 NJ 50 2520
+preplace netloc myColorRegister_0_o_imageDataB 1 4 3 1730 80 NJ 80 2510
+preplace netloc proc_sys_reset_0_peripheral_aresetn 1 2 6 670 340 N 340 1700 450 2140 690 2540 480 2840J
+preplace netloc processing_system7_0_FCLK_RESET0_N 1 4 1 1680 -120n
+preplace netloc reset_rtl_1 1 0 2 -70 280 NJ
 preplace netloc sys_clock_1 1 0 1 NJ 360
-preplace netloc v_axi4s_vid_out_0_sof_state_out 1 6 3 2070 760 NJ 760 2800
-preplace netloc v_axi4s_vid_out_0_vtg_ce 1 6 3 2070 480 NJ 480 2800
-preplace netloc processing_system7_0_DDR 1 5 5 1690J 50 NJ 50 2490J 60 NJ 60 NJ
-preplace netloc processing_system7_0_FIXED_IO 1 5 5 NJ 80 2060J 90 NJ 90 NJ 90 NJ
-preplace netloc processing_system7_0_M_AXI_GP0 1 5 1 1680 120n
-preplace netloc rgb2dvi_0_TMDS 1 9 1 NJ 560
-preplace netloc smartconnect_0_M00_AXI 1 6 1 2040 160n
-preplace netloc smartconnect_0_M01_AXI 1 6 1 N 180
-preplace netloc smartconnect_1_M00_AXI 1 4 1 N 100
-preplace netloc testPatternGenerator_0_m_axis 1 6 1 2070 350n
-preplace netloc v_axi4s_vid_out_0_vid_io_out 1 8 1 N 540
-preplace netloc v_proc_ss_0_m_axis 1 7 1 2490 360n
-preplace netloc v_tc_0_vtiming_out 1 7 1 N 570
-levelinfo -pg 1 -10 110 390 760 1090 1450 1890 2310 2660 2930 3050
-pagesize -pg 1 -db -bbox -sgen -120 0 3160 770
+preplace netloc v_axi4s_vid_out_0_sof_state_out 1 5 3 2150 740 NJ 740 2830
+preplace netloc v_axi4s_vid_out_0_vtg_ce 1 5 3 2150 480 2510J 460 2830
+preplace netloc clk_wiz_0_clk_out1 1 1 7 200 200 660 230 N 230 1710 -200 2120 470 2530 470 2850
+preplace netloc Net 1 2 4 690 30 1150 220 1690 -210 2140
+preplace netloc rst_ps7_0_50M_peripheral_aresetn 1 5 1 2130 -170n
+preplace netloc processing_system7_0_DDR 1 4 5 NJ 60 NJ 60 NJ 60 NJ 60 NJ
+preplace netloc processing_system7_0_FIXED_IO 1 4 5 1700J 70 NJ 70 NJ 70 NJ 70 3050J
+preplace netloc processing_system7_0_M_AXI_GP0 1 4 1 1700 120n
+preplace netloc rgb2dvi_0_TMDS 1 8 1 NJ 560
+preplace netloc smartconnect_0_M00_AXI 1 5 1 2110 150n
+preplace netloc smartconnect_0_M01_AXI 1 5 1 2100 170n
+preplace netloc v_axi4s_vid_out_0_vid_io_out 1 7 1 N 540
+preplace netloc v_proc_ss_0_m_axis 1 6 1 2520 360n
+preplace netloc v_tc_0_vtiming_out 1 6 1 N 570
+preplace netloc smartconnect_0_M02_AXI 1 2 4 680 20 1150J 0 1700J 10 2090
+preplace netloc axi_vdma_0_M_AXI_MM2S 1 3 3 1160J -220 NJ -220 2150
+preplace netloc axi_mem_intercon_M00_AXI 1 3 4 1160 -10 1730J 0 NJ 0 2520
+levelinfo -pg 1 -90 110 480 960 1470 1910 2340 2690 2950 3070
+pagesize -pg 1 -db -bbox -sgen -200 -340 3190 950
 "
 }
 {
+   "da_axi4_cnt":"4",
    "da_board_cnt":"2",
    "da_ps7_cnt":"1"
 }
